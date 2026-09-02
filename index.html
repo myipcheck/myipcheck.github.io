@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>myip - Qual é o Meu IP, Calculadora, Velocidade, DNS e Segurança</title>
+  <meta name="description" content="Descubra seu endereço IP público, calcule sub-redes, teste velocidade, consulte registros DNS, detecte vazamentos WebRTC e gere senhas seguras.">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Leaflet CSS for Maps -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+  <!-- Background Glow Orbs -->
+  <div class="bg-orb orb-1"></div>
+  <div class="bg-orb orb-2"></div>
+  <div class="bg-orb orb-3"></div>
+
+  <!-- Main Navigation Header -->
+  <header class="site-header">
+    <div class="header-container">
+      <!-- Logo no lado esquerdo -->
+      <a href="#myip" class="brand-logo" id="nav-brand">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12.55a11 11 0 0 1 14.08 0"></path>
+            <path d="M1.42 9a16 16 0 0 1 21.16 0"></path>
+            <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
+            <circle cx="12" cy="20" r="1.5" fill="currentColor"></circle>
+          </svg>
+        </div>
+        <div class="logo-text">
+          <span class="logo-title">my<span class="gradient-text">ip</span></span>
+        </div>
+      </a>
+
+      <!-- Menu de Ferramentas puxado para a esquerda -->
+      <nav class="main-nav-container" id="main-nav">
+        <button class="nav-item active" data-tab="myip">
+          <span class="tab-icon">🌐</span>
+          <span data-i18n="nav_myip">Meu IP</span>
+        </button>
+        <button class="nav-item" data-tab="calculator">
+          <span class="tab-icon">🧮</span>
+          <span data-i18n="nav_calculator">Calculadora IP</span>
+        </button>
+        <button class="nav-item" data-tab="speedtest">
+          <span class="tab-icon">⚡</span>
+          <span data-i18n="nav_speedtest">Velocímetro</span>
+        </button>
+        <button class="nav-item" data-tab="password">
+          <span class="tab-icon">🔐</span>
+          <span data-i18n="nav_password">Senhas</span>
+        </button>
+        <button class="nav-item" data-tab="webrtc">
+          <span class="tab-icon">🛡️</span>
+          <span data-i18n="nav_webrtc">WebRTC</span>
+        </button>
+        <button class="nav-item" data-tab="dnslookup">
+          <span class="tab-icon">🔍</span>
+          <span data-i18n="nav_dnslookup">DNS</span>
+        </button>
+        <button class="nav-item" data-tab="portcheck">
+          <span class="tab-icon">🚪</span>
+          <span data-i18n="nav_portcheck">Portas</span>
+        </button>
+        <button class="nav-item" data-tab="wifiqr">
+          <span class="tab-icon">📶</span>
+          <span data-i18n="nav_wifiqr">Wi-Fi QR</span>
+        </button>
+        <button class="nav-item" data-tab="sslcheck">
+          <span class="tab-icon">🔒</span>
+          <span data-i18n="nav_sslcheck">SSL</span>
+        </button>
+        <button class="nav-item" data-tab="ipconvert">
+          <span class="tab-icon">🔄</span>
+          <span data-i18n="nav_ipconvert">Conversor IP</span>
+        </button>
+      </nav>
+
+      <!-- Botões de Ação na extrema direita: Combobox de Idioma & Tema -->
+      <div class="header-actions">
+        <!-- Combobox Customizado com Imagens de Bandeiras Reais -->
+        <div class="custom-lang-combobox" id="custom-lang-combobox">
+          <button class="combo-trigger" id="combo-trigger" aria-haspopup="listbox" aria-expanded="false" title="Selecionar Idioma / Select Language">
+            <span class="flag-icon" id="active-flag-icon">
+              <img src="https://flagcdn.com/w40/br.png" width="22" height="15" alt="Brasil" class="flag-img" />
+            </span>
+            <span class="combo-text" id="active-lang-text">Português</span>
+            <svg class="combo-chevron" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+
+          <div class="combo-menu hidden" id="combo-menu" role="listbox">
+            <button class="combo-item active" data-lang="pt" role="option">
+              <img src="https://flagcdn.com/w40/br.png" width="22" height="15" alt="Brasil" class="flag-img" />
+              <span>Português</span>
+            </button>
+            <button class="combo-item" data-lang="en" role="option">
+              <img src="https://flagcdn.com/w40/us.png" width="22" height="15" alt="United States" class="flag-img" />
+              <span>English</span>
+            </button>
+            <button class="combo-item" data-lang="es" role="option">
+              <img src="https://flagcdn.com/w40/es.png" width="22" height="15" alt="España" class="flag-img" />
+              <span>Español</span>
+            </button>
+            <button class="combo-item" data-lang="fr" role="option">
+              <img src="https://flagcdn.com/w40/fr.png" width="22" height="15" alt="France" class="flag-img" />
+              <span>Français</span>
+            </button>
+            <button class="combo-item" data-lang="it" role="option">
+              <img src="https://flagcdn.com/w40/it.png" width="22" height="15" alt="Italia" class="flag-img" />
+              <span>Italiano</span>
+            </button>
+            <button class="combo-item" data-lang="zh" role="option">
+              <img src="https://flagcdn.com/w40/cn.png" width="22" height="15" alt="China" class="flag-img" />
+              <span>中文</span>
+            </button>
+          </div>
+        </div>
+
+        <button class="theme-toggle-btn" id="theme-toggle" aria-label="Alternar Tema Claro/Escuro" title="Alternar tema claro/escuro" data-i18n-title="theme_toggle_title">
+          <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          <svg class="moon-icon" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+
+        <!-- Mobile Menu Hamburger -->
+        <button class="mobile-menu-btn" id="mobile-menu-toggle" aria-label="Abrir Menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Nav Drawer -->
+    <div class="mobile-nav-drawer" id="mobile-nav">
+      <div class="mobile-lang-row">
+        <span class="mobile-lang-label">Idioma:</span>
+        <div class="mobile-lang-grid">
+          <button class="mobile-lang-btn active" data-lang="pt"><img src="https://flagcdn.com/w40/br.png" width="18" height="12" alt="PT"> PT</button>
+          <button class="mobile-lang-btn" data-lang="en"><img src="https://flagcdn.com/w40/us.png" width="18" height="12" alt="EN"> EN</button>
+          <button class="mobile-lang-btn" data-lang="es"><img src="https://flagcdn.com/w40/es.png" width="18" height="12" alt="ES"> ES</button>
+          <button class="mobile-lang-btn" data-lang="fr"><img src="https://flagcdn.com/w40/fr.png" width="18" height="12" alt="FR"> FR</button>
+          <button class="mobile-lang-btn" data-lang="it"><img src="https://flagcdn.com/w40/it.png" width="18" height="12" alt="IT"> IT</button>
+          <button class="mobile-lang-btn" data-lang="zh"><img src="https://flagcdn.com/w40/cn.png" width="18" height="12" alt="ZH"> ZH</button>
+        </div>
+      </div>
+      <button class="mobile-nav-item active" data-tab="myip">🌐 <span data-i18n="nav_myip">Meu IP</span></button>
+      <button class="mobile-nav-item" data-tab="calculator">🧮 <span data-i18n="nav_calculator">Calculadora IP</span></button>
+      <button class="mobile-nav-item" data-tab="speedtest">⚡ <span data-i18n="nav_speedtest">Medidor de Velocidade</span></button>
+      <button class="mobile-nav-item" data-tab="password">🔐 <span data-i18n="nav_password">Gerador de Senha</span></button>
+      <button class="mobile-nav-item" data-tab="webrtc">🛡️ <span data-i18n="nav_webrtc">Vazamento WebRTC</span></button>
+      <button class="mobile-nav-item" data-tab="dnslookup">🔍 <span data-i18n="nav_dnslookup">Consulta DNS</span></button>
+      <button class="mobile-nav-item" data-tab="portcheck">🚪 <span data-i18n="nav_portcheck">Scanner de Portas</span></button>
+      <button class="mobile-nav-item" data-tab="wifiqr">📶 <span data-i18n="nav_wifiqr">Wi-Fi QR Code</span></button>
+      <button class="mobile-nav-item" data-tab="sslcheck">🔒 <span data-i18n="nav_sslcheck">Certificado SSL</span></button>
+      <button class="mobile-nav-item" data-tab="ipconvert">🔄 <span data-i18n="nav_ipconvert">Conversor IP</span></button>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="main-content">
+    
+    <!-- ========================================== -->
+    <!-- 1. QUAL É O MEU IP                         -->
+    <!-- ========================================== -->
+    <section class="tab-pane active" id="pane-myip">
+      <div class="ip-hero-card glass-card">
+        <div class="ip-badge-top">
+          <span class="live-pulse"></span>
+          <span data-i18n="ip_public_label">SEU ENDEREÇO IP PÚBLICO</span>
+        </div>
+
+        <div class="ip-display-wrapper">
+          <div class="ip-main-text-container">
+            <h1 class="ip-main-address" id="main-ip-address">
+              <span class="loading-skeleton">Carregando endereço IP...</span>
+            </h1>
+          </div>
+          <button class="btn-copy-ip-large" id="btn-copy-main-ip" title="Copiar IP" data-i18n-title="btn_copy_ip">
+            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            <span data-i18n="btn_copy_ip">Copiar IP</span>
+          </button>
+        </div>
+
+        <div class="ip-quick-info-row">
+          <div class="quick-info-pill">
+            <span class="pill-icon">📍</span>
+            <span id="quick-location">Detectando localização...</span>
+          </div>
+          <div class="quick-info-pill">
+            <span class="pill-icon">🏢</span>
+            <span id="quick-isp">Detectando provedor...</span>
+          </div>
+          <div class="quick-info-pill">
+            <span class="pill-icon">🌐</span>
+            <span id="quick-ip-version">IPv4 Detectado</span>
+          </div>
+          <button class="btn-refresh-ip" id="btn-refresh-ip" title="Atualizar informações" data-i18n-title="btn_refresh_ip">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none">
+              <path d="M23 4v6h-6"></path>
+              <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+            </svg>
+            <span data-i18n="btn_refresh_ip">Atualizar Detecção</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Custom IP Search Bar -->
+      <div class="ip-search-card glass-card">
+        <div class="search-input-group">
+          <div class="search-icon">
+            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          </div>
+          <input type="text" id="custom-ip-input" placeholder="Digite um IP (ex: 8.8.8.8) ou domínio (ex: google.com)..." data-i18n-placeholder="search_custom_placeholder" autocomplete="off" spellcheck="false">
+          <button class="btn-primary" id="btn-search-ip">
+            <span data-i18n="btn_search">Consultar</span>
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- IP Details Grid & Map -->
+      <div class="ip-grid-layout">
+        <!-- Details Card -->
+        <div class="glass-card details-card">
+          <div class="card-header">
+            <div class="header-icon">
+              <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="16" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+              </svg>
+            </div>
+            <h3 data-i18n="details_title">Detalhes de Geolocalização & Conexão</h3>
+          </div>
+
+          <div class="details-list">
+            <div class="detail-row">
+              <span class="detail-label" data-i18n="detail_country">País:</span>
+              <span class="detail-value" id="detail-country">--</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label" data-i18n="detail_region">Estado / Região:</span>
+              <span class="detail-value" id="detail-region">--</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label" data-i18n="detail_city">Cidade:</span>
+              <span class="detail-value" id="detail-city">--</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label" data-i18n="detail_isp">Provedor (ISP):</span>
+              <span class="detail-value" id="detail-isp">--</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label" data-i18n="detail_asn">Código ASN:</span>
+              <span class="detail-value" id="detail-asn">--</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label" data-i18n="detail_hostname">Hostname Reverso:</span>
+              <span class="detail-value mono-text" id="detail-hostname">--</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label" data-i18n="detail_timezone">Fuso Horário:</span>
+              <span class="detail-value" id="detail-timezone">--</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label" data-i18n="detail_coords">Coordenadas:</span>
+              <span class="detail-value mono-text" id="detail-coords">--</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Interactive Map Card -->
+        <div class="glass-card map-card">
+          <div class="card-header map-header">
+            <div class="header-icon">
+              <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none">
+                <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon>
+                <line x1="8" y1="2" x2="8" y2="18"></line>
+                <line x1="16" y1="6" x2="16" y2="22"></line>
+              </svg>
+            </div>
+            <h3 data-i18n="map_title">Localização Aproximada no Mapa</h3>
+          </div>
+          <div class="map-container-wrapper">
+            <div id="ip-map" class="interactive-map"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Seu Histórico de IPs e Provedores Card -->
+      <div class="glass-card ip-history-card">
+        <div class="card-header">
+          <div class="header-icon">
+            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+          </div>
+          <h3 data-i18n="history_title">Seu Histórico de IPs e Provedores</h3>
+          <button class="btn-sm btn-ghost" id="btn-clear-ip-history" style="margin-left: auto;" data-i18n="btn_clear_history">Limpar Histórico</button>
+        </div>
+        <div class="history-table-container">
+          <table class="ip-history-table">
+            <thead>
+              <tr>
+                <th data-i18n="th_datetime">Dia - Hora</th>
+                <th data-i18n="th_ip">seu IP</th>
+                <th data-i18n="th_provider">Provedor</th>
+              </tr>
+            </thead>
+            <tbody id="ip-history-tbody">
+              <tr>
+                <td colspan="3" class="no-records-cell" data-i18n="no_history">Nenhum histórico registrado ainda. Conforme seu IP for detectado, o histórico aparecerá aqui.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- 2. CALCULADORA DE IP & SUB-REDE            -->
+    <!-- ========================================== -->
+    <section class="tab-pane" id="pane-calculator">
+      <div class="tool-intro">
+        <h2 class="tool-title" data-i18n="tab2_title">Calculadora de IP & Sub-rede (CIDR)</h2>
+        <p class="tool-desc" data-i18n="tab2_desc">Calcule endereços de rede, broadcast, faixas de hosts válidos, máscaras e representação binária instantaneamente.</p>
+      </div>
+
+      <div class="calc-grid-layout">
+        <div class="glass-card calc-form-card">
+          <div class="card-header">
+            <div class="header-icon"><svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><rect x="4" y="2" width="16" height="20" rx="2"></rect></svg></div>
+            <h3 data-i18n="calc_form_title">Parâmetros da Sub-rede</h3>
+          </div>
+          <form id="ipcalc-form" class="calc-form" onsubmit="return false;">
+            <div class="form-group">
+              <label for="calc-ip-input" data-i18n="calc_ip_label">Endereço IP (IPv4):</label>
+              <div class="input-with-presets">
+                <input type="text" id="calc-ip-input" class="form-input mono-text" value="192.168.1.100" placeholder="ex: 192.168.1.100" spellcheck="false">
+                <button type="button" class="btn-sm btn-ghost" id="btn-use-myip-calc" data-i18n="btn_use_my_ip">Usar Meu IP</button>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="calc-mask-select" data-i18n="calc_cidr_label">Máscara de Rede (CIDR):</label>
+              <select id="calc-mask-select" class="form-select mono-text"></select>
+            </div>
+            <div class="quick-preset-buttons">
+              <span class="preset-label">Máscaras Comuns:</span>
+              <button type="button" class="btn-preset" data-cidr="24">/24 (255.255.255.0)</button>
+              <button type="button" class="btn-preset" data-cidr="16">/16 (255.255.0.0)</button>
+              <button type="button" class="btn-preset" data-cidr="8">/8 (255.0.0.0)</button>
+              <button type="button" class="btn-preset" data-cidr="30">/30 (Ponto a Ponto)</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="glass-card calc-results-card">
+          <div class="card-header">
+            <div class="header-icon"><svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg></div>
+            <h3 data-i18n="calc_results_title">Resultados do Cálculo de Rede</h3>
+          </div>
+          <div class="results-table-container">
+            <table class="calc-results-table">
+              <tbody>
+                <tr><td data-i18n="res_net_address">Endereço de Rede (Network):</td><td class="mono-bold text-accent" id="res-network-ip">--</td></tr>
+                <tr><td data-i18n="res_bcast_address">Endereço de Broadcast:</td><td class="mono-bold text-warning" id="res-broadcast-ip">--</td></tr>
+                <tr><td data-i18n="res_usable_range">Faixa de Hosts Utilizáveis:</td><td class="mono-bold text-success" id="res-usable-range">--</td></tr>
+                <tr><td data-i18n="res_first_host">Primeiro Host Utilizável:</td><td class="mono-text" id="res-first-host">--</td></tr>
+                <tr><td data-i18n="res_last_host">Último Host Utilizável:</td><td class="mono-text" id="res-last-host">--</td></tr>
+                <tr><td data-i18n="res_usable_hosts">Hosts Utilizáveis:</td><td class="mono-bold" id="res-usable-hosts">--</td></tr>
+                <tr><td data-i18n="res_total_hosts">Total de Endereços IP:</td><td class="mono-text" id="res-total-hosts">--</td></tr>
+                <tr><td data-i18n="res_subnet_mask">Máscara de Sub-rede:</td><td class="mono-text" id="res-subnet-mask">--</td></tr>
+                <tr><td data-i18n="res_wildcard">Máscara Inversa (Wildcard):</td><td class="mono-text" id="res-wildcard-mask">--</td></tr>
+                <tr><td data-i18n="res_ip_class">Classe do IP:</td><td id="res-ip-class-type"><span class="badge badge-info" id="badge-ip-class">--</span> <span class="badge badge-secondary" id="badge-ip-type">--</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass-card binary-card">
+        <div class="card-header">
+          <div class="header-icon"><svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><path d="M4 17l6-6-6-6"></path><path d="M12 19h8"></path></svg></div>
+          <h3 data-i18n="binary_title">Decomposição Binária (32 Bits)</h3>
+          <div class="binary-legend">
+            <span class="legend-item"><span class="legend-dot net-dot"></span> <span data-i18n="binary_legend_net">Bits de Rede</span></span>
+            <span class="legend-item"><span class="legend-dot host-dot"></span> <span data-i18n="binary_legend_host">Bits de Host</span></span>
+          </div>
+        </div>
+        <div class="binary-grid">
+          <div class="binary-row"><span class="binary-label" data-i18n="calc_ip_label">Endereço IP:</span><div class="binary-bits mono-text" id="binary-ip">--</div></div>
+          <div class="binary-row"><span class="binary-label" data-i18n="res_subnet_mask">Máscara Sub-rede:</span><div class="binary-bits mono-text" id="binary-mask">--</div></div>
+          <div class="binary-row"><span class="binary-label" data-i18n="res_net_address">Rede:</span><div class="binary-bits mono-text" id="binary-net">--</div></div>
+          <div class="binary-row"><span class="binary-label" data-i18n="res_bcast_address">Broadcast:</span><div class="binary-bits mono-text" id="binary-bcast">--</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- 3. MEDIDOR DE VELOCIDADE (SPEED TEST)      -->
+    <!-- ========================================== -->
+    <section class="tab-pane" id="pane-speedtest">
+      <div class="tool-intro">
+        <h2 class="tool-title" data-i18n="tab3_title">Medidor de Velocidade de Conexão</h2>
+        <p class="tool-desc" data-i18n="tab3_desc">Teste em tempo real a latência (Ping), estabilidade (Jitter), velocidade de Download e Upload da sua internet.</p>
+      </div>
+
+      <div class="speedtest-main-card glass-card">
+        <div class="speed-gauge-section">
+          <div class="gauge-container">
+            <svg class="gauge-svg" viewBox="0 0 300 200">
+              <path class="gauge-bg-arc" d="M 30 180 A 120 120 0 0 1 270 180" fill="none" stroke-width="20" stroke-linecap="round"/>
+              <path class="gauge-fill-arc" id="gauge-fill-arc" d="M 30 180 A 120 120 0 0 1 270 180" fill="none" stroke-width="20" stroke-linecap="round"/>
+              <g class="gauge-ticks">
+                <text x="30" y="198" class="tick-label">0</text>
+                <text x="50" y="115" class="tick-label">10</text>
+                <text x="100" y="55" class="tick-label">50</text>
+                <text x="150" y="38" class="tick-label">100</text>
+                <text x="200" y="55" class="tick-label">250</text>
+                <text x="250" y="115" class="tick-label">500</text>
+                <text x="270" y="198" class="tick-label">1000+</text>
+              </g>
+              <g class="needle-group" id="gauge-needle">
+                <circle cx="150" cy="180" r="10" class="needle-center"/>
+                <polygon points="147,180 153,180 150,50" class="needle-pointer"/>
+              </g>
+            </svg>
+            <div class="gauge-center-content">
+              <div class="gauge-phase-badge" id="speed-test-phase" data-i18n="speed_ready">PRONTO PARA TESTAR</div>
+              <div class="gauge-speed-val" id="gauge-current-speed">0.0</div>
+              <div class="gauge-speed-unit">Mbps</div>
+            </div>
+          </div>
+          <div class="gauge-action-wrapper">
+            <button class="btn-speed-start" id="btn-start-speedtest">
+              <span class="btn-glow"></span>
+              <span class="btn-text" data-i18n="btn_speed_start">INICIAR TESTE</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="speed-metrics-grid">
+          <div class="metric-card" id="metric-ping">
+            <div class="metric-header"><span class="metric-icon">📶</span><span class="metric-name" data-i18n="metric_ping_name">Ping (Latência)</span></div>
+            <div class="metric-body"><span class="metric-val" id="val-ping">--</span><span class="metric-unit">ms</span></div>
+            <div class="metric-progress-bar"><div class="bar-fill" id="bar-ping"></div></div>
+          </div>
+          <div class="metric-card" id="metric-jitter">
+            <div class="metric-header"><span class="metric-icon">〰️</span><span class="metric-name" data-i18n="metric_jitter_name">Jitter (Oscilação)</span></div>
+            <div class="metric-body"><span class="metric-val" id="val-jitter">--</span><span class="metric-unit">ms</span></div>
+            <div class="metric-progress-bar"><div class="bar-fill" id="bar-jitter"></div></div>
+          </div>
+          <div class="metric-card" id="metric-download">
+            <div class="metric-header"><span class="metric-icon">⬇️</span><span class="metric-name" data-i18n="metric_download_name">Download</span></div>
+            <div class="metric-body"><span class="metric-val" id="val-download">--</span><span class="metric-unit">Mbps</span></div>
+            <div class="metric-progress-bar"><div class="bar-fill" id="bar-download"></div></div>
+          </div>
+          <div class="metric-card" id="metric-upload">
+            <div class="metric-header"><span class="metric-icon">⬆️</span><span class="metric-name" data-i18n="metric_upload_name">Upload</span></div>
+            <div class="metric-body"><span class="metric-val" id="val-upload">--</span><span class="metric-unit">Mbps</span></div>
+            <div class="metric-progress-bar"><div class="bar-fill" id="bar-upload"></div></div>
+          </div>
+        </div>
+
+        <div class="speed-summary-report hidden" id="speed-report-box">
+          <div class="report-header">
+            <h4 data-i18n="diag_title">Diagnóstico de Qualidade da Conexão</h4>
+            <span class="report-badge badge-excellent" id="report-overall-badge">Excelente Conexão</span>
+          </div>
+          <div class="suitability-tags">
+            <div class="suitability-item" id="suit-streaming"><span class="suit-icon">🎬</span><span>Streaming 4K / 8K: <strong class="text-success">Ideal</strong></span></div>
+            <div class="suitability-item" id="suit-gaming"><span class="suit-icon">🎮</span><span>Jogos Online: <strong class="text-success">Baixa Latência</strong></span></div>
+            <div class="suitability-item" id="suit-work"><span class="suit-icon">💻</span><span>Home Office & Chamadas: <strong class="text-success">Perfeito</strong></span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Histórico de Testes de Velocidade -->
+      <div class="glass-card speed-history-card">
+        <div class="card-header">
+          <div class="header-icon">
+            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+          </div>
+          <h3 data-i18n="speed_history_title">Seu Histórico de Velocidade de Internet</h3>
+          <button class="btn-sm btn-ghost" id="btn-clear-speed-history" style="margin-left: auto;" data-i18n="btn_clear_history">Limpar Histórico</button>
+        </div>
+        <div class="history-table-container">
+          <table class="ip-history-table">
+            <thead>
+              <tr>
+                <th data-i18n="th_datetime">Dia - Hora</th>
+                <th data-i18n="th_ip">seu IP</th>
+                <th data-i18n="th_download">Download</th>
+                <th data-i18n="th_upload">Upload</th>
+                <th data-i18n="th_ping">Ping</th>
+                <th data-i18n="th_jitter">Jitter</th>
+              </tr>
+            </thead>
+            <tbody id="speed-history-tbody">
+              <tr>
+                <td colspan="6" class="no-records-cell" data-i18n="no_speed_history">Nenhum teste de velocidade realizado ainda. Seus resultados aparecerão aqui.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- 4. GERADOR DE SENHA SEGURA                 -->
+    <!-- ========================================== -->
+    <section class="tab-pane" id="pane-password">
+      <div class="tool-intro">
+        <h2 class="tool-title" data-i18n="tab4_title">Gerador de Senhas Seguras & Frases-Passe</h2>
+        <p class="tool-desc" data-i18n="tab4_desc">Crie senhas criptograficamente seguras com entropia calculada ou frases mnemônicas fáceis de lembrar.</p>
+      </div>
+
+      <div class="pwd-main-layout">
+        <div class="glass-card pwd-display-card">
+          <div class="pwd-output-container">
+            <div class="pwd-text-box">
+              <input type="text" id="generated-password-output" class="pwd-input-field mono-text" readonly value="Gere sua senha...">
+              <button class="btn-pwd-action" id="btn-toggle-pwd-visibility" title="Mostrar/Ocultar Senha">
+                <svg id="eye-icon-show" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                <svg id="eye-icon-hide" class="hidden" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+              </button>
+            </div>
+            <div class="pwd-actions-row">
+              <button class="btn-primary btn-generate-pwd" id="btn-generate-pwd">
+                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                <span data-i18n="btn_generate_pwd">Gerar Nova Senha</span>
+              </button>
+              <button class="btn-secondary btn-copy-pwd" id="btn-copy-pwd">
+                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                <span data-i18n="btn_copy_pwd">Copiar Senha</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="strength-meter-container">
+            <div class="strength-labels">
+              <span class="strength-title"><span data-i18n="pwd_entropy_label">Força da Senha:</span> <strong id="strength-label-text">Muito Forte</strong></span>
+              <span class="entropy-val" id="entropy-bits">~96 bits</span>
+            </div>
+            <div class="strength-bar-track"><div class="strength-bar-fill" id="strength-bar-fill"></div></div>
+            <div class="crack-time-estimate"><span data-i18n="crack_time_label">⏱️ Tempo estimado para quebrar por força bruta:</span> <strong id="crack-time-val">34 mil anos</strong></div>
+          </div>
+        </div>
+
+        <div class="glass-card pwd-options-card">
+          <div class="card-header">
+            <div class="header-icon"><svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="3"></circle></svg></div>
+            <h3>Opções de Personalização</h3>
+          </div>
+          <div class="pwd-mode-switch">
+            <button class="mode-btn active" id="mode-random-chars" data-i18n="pwd_mode_random">Senha Aleatória</button>
+            <button class="mode-btn" id="mode-passphrase" data-i18n="pwd_mode_passphrase">Frase-Passe (Mnemônica)</button>
+          </div>
+          <div id="settings-characters-mode">
+            <div class="slider-control-group">
+              <div class="slider-labels"><label for="pwd-length-slider" data-i18n="pwd_length_label">Tamanho da Senha:</label><span class="slider-val-badge" id="pwd-length-display">16 caracteres</span></div>
+              <input type="range" id="pwd-length-slider" min="6" max="64" value="16" class="range-slider">
+            </div>
+            <div class="toggles-grid">
+              <label class="toggle-card"><input type="checkbox" id="chk-uppercase" checked><span class="custom-checkbox"></span><div class="toggle-text"><strong data-i18n="opt_uppercase">Letras Maiúsculas (A-Z)</strong><small>ABCDEFG...</small></div></label>
+              <label class="toggle-card"><input type="checkbox" id="chk-lowercase" checked><span class="custom-checkbox"></span><div class="toggle-text"><strong data-i18n="opt_lowercase">Letras Minúsculas (a-z)</strong><small>abcdefg...</small></div></label>
+              <label class="toggle-card"><input type="checkbox" id="chk-numbers" checked><span class="custom-checkbox"></span><div class="toggle-text"><strong data-i18n="opt_numbers">Números (0-9)</strong><small>0123456789</small></div></label>
+              <label class="toggle-card"><input type="checkbox" id="chk-symbols" checked><span class="custom-checkbox"></span><div class="toggle-text"><strong data-i18n="opt_symbols">Símbolos Especiais (!@#$%...)</strong><small>!@#$%^&*()_+</small></div></label>
+              <label class="toggle-card full-width"><input type="checkbox" id="chk-avoid-ambiguous"><span class="custom-checkbox"></span><div class="toggle-text"><strong data-i18n="opt_exclude_similar">Evitar caracteres ambíguos</strong><small>Remove i, l, 1, L, o, 0, O</small></div></label>
+            </div>
+          </div>
+          <div id="settings-passphrase-mode" class="hidden">
+            <div class="slider-control-group">
+              <div class="slider-labels"><label for="passphrase-words-slider" data-i18n="words_count_label">Quantidade de Palavras:</label><span class="slider-val-badge" id="passphrase-words-display">4 palavras</span></div>
+              <input type="range" id="passphrase-words-slider" min="3" max="8" value="4" class="range-slider">
+            </div>
+            <div class="form-group">
+              <label for="passphrase-separator" data-i18n="words_sep_label">Separador:</label>
+              <select id="passphrase-separator" class="form-select">
+                <option value="-">Hífen ( - )</option>
+                <option value=".">Ponto ( . )</option>
+                <option value="_">Underline ( _ )</option>
+                <option value=" ">Espaço ( )</option>
+              </select>
+            </div>
+            <div class="toggles-grid">
+              <label class="toggle-card"><input type="checkbox" id="chk-passphrase-capitalize" checked><span class="custom-checkbox"></span><div class="toggle-text"><strong>Maiúscula Inicial</strong><small>Palavra-Segura</small></div></label>
+              <label class="toggle-card"><input type="checkbox" id="chk-passphrase-number" checked><span class="custom-checkbox"></span><div class="toggle-text"><strong>Número no Fim</strong><small>Palavra-42</small></div></label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass-card pwd-history-card">
+        <div class="card-header">
+          <div class="header-icon"><svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></div>
+          <h3 data-i18n="pwd_history_title">Histórico desta Sessão</h3>
+          <button class="btn-sm btn-ghost" id="btn-clear-pwd-history" data-i18n="btn_clear_history">Limpar Histórico</button>
+        </div>
+        <div class="history-list" id="pwd-history-list">
+          <div class="empty-history-text">As senhas geradas nesta sessão aparecerão aqui.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- 5. DETECTOR DE VAZAMENTO WEBRTC            -->
+    <!-- ========================================== -->
+    <section class="tab-pane" id="pane-webrtc">
+      <div class="tool-intro">
+        <h2 class="tool-title" data-i18n="tab5_title">Detector de Vazamento WebRTC (VPN Leak)</h2>
+        <p class="tool-desc" data-i18n="tab5_desc">Verifique se o seu navegador está expondo seu IP real através de canais STUN/WebRTC mesmo com VPN conectada.</p>
+      </div>
+
+      <div class="webrtc-grid-layout">
+        <div class="glass-card webrtc-card">
+          <div class="card-header">
+            <div class="header-icon">🛡️</div>
+            <h3>Status de Privacidade WebRTC</h3>
+            <span class="status-pill idle" id="webrtc-status-badge">Pronto para Testar</span>
+          </div>
+          <div class="webrtc-body">
+            <div class="webrtc-section">
+              <h4 data-i18n="webrtc_local_ip">IPs Locais (Rede Interna):</h4>
+              <ul class="ip-leak-list" id="webrtc-local-ips">
+                <li class="empty-text">Clique no botão abaixo para escanear candidatos locais.</li>
+              </ul>
+            </div>
+
+            <div class="webrtc-section">
+              <h4 data-i18n="webrtc_public_ip">IP Público WebRTC:</h4>
+              <ul class="ip-leak-list" id="webrtc-public-ips">
+                <li class="empty-text">Nenhum teste executado ainda.</li>
+              </ul>
+            </div>
+
+            <div id="webrtc-explanation"></div>
+
+            <div class="webrtc-actions">
+              <button class="btn-primary" id="btn-test-webrtc" data-i18n="btn_scan_webrtc">Iniciar Teste de Vazamento</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- 6. CONSULTA DE REGISTROS DNS               -->
+    <!-- ========================================== -->
+    <section class="tab-pane" id="pane-dnslookup">
+      <div class="tool-intro">
+        <h2 class="tool-title" data-i18n="tab6_title">Consulta de Registros DNS (DNS Lookup)</h2>
+        <p class="tool-desc" data-i18n="tab6_desc">Consulte em tempo real registros DNS (A, AAAA, MX, TXT, CNAME, NS, SOA) de qualquer domínio através de DNS over HTTPS.</p>
+      </div>
+
+      <div class="dns-search-card glass-card">
+        <div class="search-input-group">
+          <input type="text" id="dns-domain-input" placeholder="ex: google.com, cloudflare.com" data-i18n-placeholder="dns_input_placeholder" value="google.com" spellcheck="false">
+          <button class="btn-primary" id="btn-query-dns" data-i18n="btn_query_dns">Consultar DNS</button>
+        </div>
+
+        <div class="dns-types-bar">
+          <span class="filter-label" data-i18n="dns_type_label">Tipo de Registro:</span>
+          <button class="btn-dns-type active" data-type="ALL">TODOS</button>
+          <button class="btn-dns-type" data-type="A">A (IPv4)</button>
+          <button class="btn-dns-type" data-type="AAAA">AAAA (IPv6)</button>
+          <button class="btn-dns-type" data-type="MX">MX (E-mail)</button>
+          <button class="btn-dns-type" data-type="TXT">TXT (SPF/DMARC)</button>
+          <button class="btn-dns-type" data-type="CNAME">CNAME</button>
+          <button class="btn-dns-type" data-type="NS">NS</button>
+          <button class="btn-dns-type" data-type="SOA">SOA</button>
+        </div>
+      </div>
+
+      <div class="glass-card dns-results-card hidden" id="dns-results-card">
+        <div class="card-header">
+          <div class="header-icon">🔍</div>
+          <h3 data-i18n="dns_records_found">Registros Encontrados</h3>
+          <div id="dns-loading" class="spinner-small hidden"></div>
+        </div>
+        <div class="results-table-container">
+          <table class="calc-results-table dns-table">
+            <thead>
+              <tr>
+                <th>Tipo</th>
+                <th>Nome / Host</th>
+                <th>Dados / Apontamento</th>
+                <th>TTL</th>
+              </tr>
+            </thead>
+            <tbody id="dns-results-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- 7. VERIFICADOR DE PORTAS                   -->
+    <!-- ========================================== -->
+    <section class="tab-pane" id="pane-portcheck">
+      <div class="tool-intro">
+        <h2 class="tool-title" data-i18n="tab7_title">Scanner de Portas de Rede</h2>
+        <p class="tool-desc" data-i18n="tab7_desc">Verifique o status de portas comuns de internet ou teste uma porta TCP específica.</p>
+      </div>
+
+      <div class="port-top-card glass-card">
+        <div class="form-group">
+          <label for="port-target-host" data-i18n="port_host_label">Host ou IP Alvo:</label>
+          <div class="input-with-presets">
+            <input type="text" id="port-target-host" class="form-input mono-text" value="localhost" placeholder="ex: 192.168.1.1 ou meudominio.com" spellcheck="false">
+            <button type="button" class="btn-sm btn-ghost" id="btn-use-myip-port" data-i18n="btn_use_my_ip">Usar Meu IP</button>
+            <button type="button" class="btn-primary btn-sm" id="btn-scan-all-ports" data-i18n="btn_scan_common">Escanear Portas Comuns</button>
+          </div>
+        </div>
+
+        <div class="custom-port-checker-row">
+          <div class="form-group flex-1">
+            <label for="custom-port-input" data-i18n="port_custom_label">Porta Customizada (1-65535):</label>
+            <div class="input-with-presets">
+              <input type="number" id="custom-port-input" class="form-input mono-text" placeholder="ex: 8080" min="1" max="65535" value="80">
+              <button class="btn-secondary" id="btn-check-custom-port" data-i18n="btn_test_custom_port">Testar Porta</button>
+            </div>
+          </div>
+          <div class="custom-port-result-box">
+            <span class="port-status-badge badge-idle" id="custom-port-status-badge">Aguardando Teste</span>
+            <small id="custom-port-detail-text">Digite a porta e clique em testar</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass-card port-list-card">
+        <div class="card-header">
+          <div class="header-icon">🚪</div>
+          <h3>Portas Comuns de Rede</h3>
+        </div>
+        <div class="common-ports-grid" id="common-ports-grid"></div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- 8. GERADOR DE QR CODE PARA WI-FI           -->
+    <!-- ========================================== -->
+    <section class="tab-pane" id="pane-wifiqr">
+      <div class="tool-intro">
+        <h2 class="tool-title" data-i18n="tab8_title">Gerador de QR Code para Conectar no Wi-Fi</h2>
+        <p class="tool-desc" data-i18n="tab8_desc">Crie um QR Code para convidados conectarem à sua rede Wi-Fi apontando a câmera do celular.</p>
+      </div>
+
+      <div class="wifi-grid-layout">
+        <div class="glass-card wifi-form-card">
+          <div class="card-header">
+            <div class="header-icon">📶</div>
+            <h3>Configurações da Rede Wi-Fi</h3>
+          </div>
+          <div class="wifi-form-body">
+            <div class="form-group">
+              <label for="wifi-ssid" data-i18n="wifi_ssid_label">Nome da Rede (SSID):</label>
+              <input type="text" id="wifi-ssid" class="form-input" value="MinhaRede_5G" placeholder="ex: MinhaRede_Casa">
+            </div>
+
+            <div class="form-group">
+              <label for="wifi-auth" data-i18n="wifi_auth_label">Tipo de Segurança:</label>
+              <select id="wifi-auth" class="form-select">
+                <option value="WPA">WPA / WPA2 / WPA3</option>
+                <option value="WEP">WEP</option>
+                <option value="nopass">Rede Aberta</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="wifi-password" data-i18n="wifi_pass_label">Senha do Wi-Fi:</label>
+              <input type="text" id="wifi-password" class="form-input mono-text" value="SenhaSuperSegura123" placeholder="Digite a senha">
+            </div>
+
+            <label class="toggle-card">
+              <input type="checkbox" id="wifi-hidden">
+              <span class="custom-checkbox"></span>
+              <div class="toggle-text">
+                <strong data-i18n="wifi_hidden_label">Rede Oculta</strong>
+                <small>SSID Hidden</small>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <div class="glass-card wifi-preview-card">
+          <div class="card-header">
+            <div class="header-icon">📱</div>
+            <h3>QR Code de Conexão</h3>
+          </div>
+          <div class="wifi-preview-body">
+            <div class="qr-canvas-wrapper">
+              <canvas id="wifi-qr-canvas" width="300" height="300"></canvas>
+            </div>
+            <div class="wifi-card-info">
+              <div>Rede: <strong id="preview-wifi-ssid">MinhaRede_5G</strong></div>
+              <div>Senha: <strong id="preview-wifi-password">SenhaSuperSegura123</strong></div>
+            </div>
+            <div class="wifi-action-buttons">
+              <button class="btn-primary" id="btn-download-wifi-qr" data-i18n="btn_download_qr">Baixar Imagem PNG</button>
+              <button class="btn-secondary" id="btn-print-wifi-card" data-i18n="btn_print_qr">Imprimir Cartão Wi-Fi</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- 9. VERIFICADOR DE CERTIFICADO SSL          -->
+    <!-- ========================================== -->
+    <section class="tab-pane" id="pane-sslcheck">
+      <div class="tool-intro">
+        <h2 class="tool-title" data-i18n="tab9_title">Verificador de Certificado SSL / HTTPS</h2>
+        <p class="tool-desc" data-i18n="tab9_desc">Inspecione a validade, autoridade emissora (CA) e segurança criptográfica de certificados SSL/TLS.</p>
+      </div>
+
+      <div class="ssl-search-card glass-card">
+        <div class="search-input-group">
+          <input type="text" id="ssl-domain-input" placeholder="ex: github.com ou seudominio.com.br" data-i18n-placeholder="ssl_input_placeholder" value="google.com" spellcheck="false">
+          <button class="btn-primary" id="btn-check-ssl" data-i18n="btn_check_ssl">Verificar SSL</button>
+        </div>
+      </div>
+
+      <div class="glass-card ssl-results-card hidden" id="ssl-results-card">
+        <div class="card-header">
+          <div class="header-icon">🔒</div>
+          <h3 data-i18n="ssl_status_valid">Relatório de Segurança SSL</h3>
+          <span class="status-pill success" id="ssl-status-badge">Certificado Válido</span>
+          <div id="ssl-loading" class="spinner-small hidden"></div>
+        </div>
+
+        <div class="details-list">
+          <div class="detail-row"><span class="detail-label">Domínio:</span><span class="detail-value mono-text" id="ssl-target-domain">--</span></div>
+          <div class="detail-row"><span class="detail-label" data-i18n="ssl_issuer">Autoridade Emissora (CA):</span><span class="detail-value" id="ssl-issuer">--</span></div>
+          <div class="detail-row"><span class="detail-label" data-i18n="ssl_expires">Expira em:</span><span class="detail-value" id="ssl-valid-to">--</span></div>
+          <div class="detail-row"><span class="detail-label">Versão TLS:</span><span class="detail-value text-accent" id="ssl-protocol-ver">--</span></div>
+          <div class="detail-row"><span class="detail-label">HTTPS:</span><span class="detail-value text-success" id="ssl-https-redirect">--</span></div>
+          <div class="detail-row"><span class="detail-label">HSTS:</span><span class="detail-value" id="ssl-hsts">--</span></div>
+          <div class="detail-row"><span class="detail-label">Latência:</span><span class="detail-value mono-text" id="ssl-latency">--</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- 10. CONVERSOR DE FORMATOS DE IP            -->
+    <!-- ========================================== -->
+    <section class="tab-pane" id="pane-ipconvert">
+      <div class="tool-intro">
+        <h2 class="tool-title" data-i18n="tab10_title">Conversor de Formatos de Endereço IP</h2>
+        <p class="tool-desc" data-i18n="tab10_desc">Converta endereços IPv4 em tempo real entre Decimal com Pontos, Inteiro de 32 bits, Hexadecimal, Binário, Octal e IPv6 Mapeado.</p>
+      </div>
+
+      <div class="glass-card conv-card">
+        <div class="card-header">
+          <div class="header-icon">🔄</div>
+          <h3>Formatos de Representação do IP</h3>
+          <button class="btn-sm btn-ghost" id="btn-use-myip-convert" data-i18n="btn_use_my_ip">Usar Meu IP</button>
+        </div>
+
+        <div class="conv-grid">
+          <div class="conv-item">
+            <label for="conv-dotted" data-i18n="ip_dotted_label">Decimal com Pontos (Padrão):</label>
+            <div class="input-with-copy">
+              <input type="text" id="conv-dotted" class="form-input mono-text" value="192.168.1.1">
+              <button class="btn-sm btn-ghost btn-copy-conv" data-target="conv-dotted">Copiar</button>
+            </div>
+          </div>
+
+          <div class="conv-item">
+            <label for="conv-integer" data-i18n="ip_integer_label">Inteiro Decimal de 32 bits:</label>
+            <div class="input-with-copy">
+              <input type="text" id="conv-integer" class="form-input mono-text" value="3232235777">
+              <button class="btn-sm btn-ghost btn-copy-conv" data-target="conv-integer">Copiar</button>
+            </div>
+          </div>
+
+          <div class="conv-item">
+            <label for="conv-hex" data-i18n="ip_hex_label">Hexadecimal:</label>
+            <div class="input-with-copy">
+              <input type="text" id="conv-hex" class="form-input mono-text" value="0xC0A80101">
+              <button class="btn-sm btn-ghost btn-copy-conv" data-target="conv-hex">Copiar</button>
+            </div>
+          </div>
+
+          <div class="conv-item">
+            <label for="conv-hex-dotted">Hexadecimal Pontilhado:</label>
+            <div class="input-with-copy">
+              <input type="text" id="conv-hex-dotted" class="form-input mono-text" readonly>
+              <button class="btn-sm btn-ghost btn-copy-conv" data-target="conv-hex-dotted">Copiar</button>
+            </div>
+          </div>
+
+          <div class="conv-item full-width">
+            <label for="conv-binary" data-i18n="ip_binary_label">Binário (32 bits):</label>
+            <div class="input-with-copy">
+              <input type="text" id="conv-binary" class="form-input mono-text" value="11000000.10101000.00000001.00000001">
+              <button class="btn-sm btn-ghost btn-copy-conv" data-target="conv-binary">Copiar</button>
+            </div>
+          </div>
+
+          <div class="conv-item">
+            <label for="conv-octal" data-i18n="ip_octal_label">Octal:</label>
+            <div class="input-with-copy">
+              <input type="text" id="conv-octal" class="form-input mono-text" readonly>
+              <button class="btn-sm btn-ghost btn-copy-conv" data-target="conv-octal">Copiar</button>
+            </div>
+          </div>
+
+          <div class="conv-item">
+            <label for="conv-ipv6-mapped" data-i18n="ip_ipv6_mapped">IPv6 Mapeado (IPv4-Mapped):</label>
+            <div class="input-with-copy">
+              <input type="text" id="conv-ipv6-mapped" class="form-input mono-text" readonly>
+              <button class="btn-sm btn-ghost btn-copy-conv" data-target="conv-ipv6-mapped">Copiar</button>
+            </div>
+          </div>
+
+          <div class="conv-item full-width">
+            <label for="conv-reverse-dns">Ponteiro DNS Reverso (PTR in-addr.arpa):</label>
+            <div class="input-with-copy">
+              <input type="text" id="conv-reverse-dns" class="form-input mono-text" readonly>
+              <button class="btn-sm btn-ghost btn-copy-conv" data-target="conv-reverse-dns">Copiar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Toast Notification System -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-container">
+      <div class="footer-left">
+        <p><strong data-i18n="footer_rights">myip — Todas as ferramentas de rede essenciais em uma única plataforma rápida, segura e privada.</strong></p>
+      </div>
+      <div class="footer-right">
+        <a href="#myip" data-tab="myip" data-i18n="nav_myip">Meu IP</a>
+        <a href="#calculator" data-tab="calculator" data-i18n="nav_calculator">Calculadora IP</a>
+        <a href="#speedtest" data-tab="speedtest" data-i18n="nav_speedtest">Velocímetro</a>
+        <a href="#password" data-tab="password" data-i18n="nav_password">Senhas</a>
+        <a href="#webrtc" data-tab="webrtc" data-i18n="nav_webrtc">WebRTC</a>
+        <a href="#dnslookup" data-tab="dnslookup" data-i18n="nav_dnslookup">DNS</a>
+        <a href="#portcheck" data-tab="portcheck" data-i18n="nav_portcheck">Portas</a>
+        <a href="#wifiqr" data-tab="wifiqr" data-i18n="nav_wifiqr">Wi-Fi QR</a>
+        <a href="#sslcheck" data-tab="sslcheck" data-i18n="nav_sslcheck">SSL</a>
+        <a href="#ipconvert" data-tab="ipconvert" data-i18n="nav_ipconvert">Conversor IP</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Leaflet JS for Map rendering -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  
+  <!-- Application Scripts -->
+  <script src="js/utils.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/myip.js"></script>
+  <script src="js/ipcalc.js"></script>
+  <script src="js/password.js"></script>
+  <script src="js/speedtest.js"></script>
+  <script src="js/webrtc.js"></script>
+  <script src="js/dnslookup.js"></script>
+  <script src="js/portcheck.js"></script>
+  <script src="js/wifiqr.js"></script>
+  <script src="js/sslcheck.js"></script>
+  <script src="js/ipconvert.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
